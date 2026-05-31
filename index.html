@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>YouTube 2005 - Google Drive Edition</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #E5E5E5; font-family: 'Times New Roman', Georgia, serif; padding: 10px; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; border: 3px solid #003366; }
+        
+        .header { background: #3366CC; padding: 10px 20px; border-bottom: 4px solid #FFCC00; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .logo { font-size: 24px; font-weight: bold; font-family: Impact, 'Arial Black', sans-serif; color: white; text-shadow: 2px 2px 0 #000080; cursor: pointer; }
+        .search-box { background: white; padding: 5px; border: 2px inset #aaa; display: flex; border-radius: 4px; }
+        .search-box input { padding: 6px 10px; width: 200px; border: none; font-size: 14px; }
+        .search-box button { background: #FFCC00; border: 1px solid black; padding: 4px 15px; cursor: pointer; font-weight: bold; border-radius: 3px; }
+        .user-area { background: #000080; padding: 5px 15px; border-radius: 25px; color: white; font-weight: bold; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px; }
+        .user-area button { background: #FFCC00; border: none; padding: 4px 12px; cursor: pointer; font-weight: bold; border-radius: 4px; }
+        
+        .nav { background: #E0E0E0; padding: 8px 15px; border-bottom: 2px solid #808080; display: flex; flex-wrap: wrap; gap: 5px; }
+        .nav span { background: #DDD; padding: 6px 18px; border: 1px outset white; cursor: pointer; font-weight: bold; font-size: 14px; border-radius: 4px; }
+        .nav span:hover { background: #FFCC00; }
+        
+        .watch-layout { display: flex; gap: 25px; flex-wrap: wrap; }
+        .watch-main { flex: 2.5; min-width: 280px; }
+        .watch-sidebar { flex: 1.5; min-width: 260px; }
+        
+        .video-player { background: black; text-align: center; padding: 10px; margin-bottom: 15px; border-radius: 8px; }
+        .video-frame { width: 100%; height: auto; min-height: 400px; border: none; background: black; aspect-ratio: 16/9; }
+        .video-info-box { background: #FFFFE0; padding: 15px; border: 2px solid #DAA520; margin-bottom: 15px; border-radius: 8px; }
+        .comments-box { background: #FFF8E7; border: 2px solid #8B7355; padding: 15px; border-radius: 8px; }
+        
+        .channel-link { color: #003399; text-decoration: none; font-weight: bold; cursor: pointer; }
+        .channel-link:hover { text-decoration: underline; color: #FF5500; }
+        
+        .recommend-card { background: #FAFAFA; border: 1px solid #CCC; margin-bottom: 12px; padding: 10px; cursor: pointer; display: flex; gap: 12px; align-items: center; transition: 0.2s; border-radius: 6px; }
+        .recommend-card:hover { background: #FFFFCC; transform: translateX(3px); }
+        .recommend-thumb { width: 90px; height: 65px; background: #333; color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; border-radius: 4px; flex-shrink: 0; }
+        .recommend-info h4 { font-size: 13px; color: #003399; margin-bottom: 3px; }
+        .recommend-meta { font-size: 10px; color: #666; }
+        
+        .video-card { background: #FAFAFA; border: 1px solid #CCC; margin-bottom: 15px; padding: 12px; cursor: pointer; display: flex; gap: 15px; align-items: center; transition: 0.2s; border-radius: 8px; }
+        .video-card:hover { background: #FFFFCC; transform: translateX(5px); }
+        .thumb { width: 120px; height: 85px; background: #333; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; border-radius: 6px; flex-shrink: 0; }
+        .video-info h3 { font-size: 16px; color: #003399; margin-bottom: 5px; }
+        .video-info div { font-size: 12px; color: #666; }
+        .video-info .channel-name { color: #006621; font-size: 12px; margin-top: 3px; cursor: pointer; display: inline-block; }
+        .video-info .channel-name:hover { text-decoration: underline; color: #FF5500; }
+        
+        .like-btn, .sub-btn { background: #FFAA66; border: 2px outset #FF5500; padding: 8px 20px; cursor: pointer; font-weight: bold; margin: 5px; border-radius: 6px; font-size: 14px; }
+        .comment { border-bottom: 1px dotted #886622; padding: 10px; background: #FFFFF0; margin: 5px 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; border-radius: 6px; }
+        .delete-btn, .delete-video-btn { background: #FF6666; border-color: #CC0000; color: white; padding: 6px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin: 5px; }
+        .edit-btn { background: #FFAA44; border-color: #FF8800; color: #000; padding: 6px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin: 5px; }
+        .upload-area, .register-area { background: #E6E6FA; border: 3px groove #000080; padding: 20px; margin-bottom: 20px; border-radius: 12px; }
+        input, textarea { padding: 10px; margin: 8px 0; width: 100%; max-width: 100%; font-family: monospace; border: 1px solid #999; border-radius: 6px; font-size: 14px; }
+        button { background: #FFDD99; border: 1px outset #CCAA44; padding: 8px 20px; cursor: pointer; font-weight: bold; border-radius: 6px; font-size: 14px; }
+        .footer { background: #DDD; text-align: center; padding: 12px; border-top: 2px solid #808080; font-size: 12px; }
+        .error { background: #FFCCCC; color: red; padding: 10px; margin: 10px 0; border: 1px solid red; border-radius: 6px; }
+        .success { background: #CCFFCC; color: green; padding: 10px; margin: 10px 0; border: 1px solid green; border-radius: 6px; }
+        .loading { text-align: center; padding: 60px; font-size: 18px; color: #666; }
+        .badge-public { background: #4CAF50; color: white; padding: 3px 10px; border-radius: 20px; font-size: 11px; margin-left: 8px; }
+        .badge-draft { background: #999; color: white; padding: 3px 10px; border-radius: 20px; font-size: 11px; margin-left: 8px; }
+        
+        .notif-bell { position: relative; cursor: pointer; display: inline-block; }
+        .notif-icon { font-size: 18px; background: #FFCC00; padding: 4px 12px; border-radius: 25px; color: #000; font-weight: bold; }
+        .notif-badge { position: absolute; top: -8px; right: -8px; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold; animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .notif-dropdown { display: none; position: absolute; right: 0; top: 40px; width: 280px; background: white; border: 2px solid #003366; border-radius: 8px; z-index: 100; max-height: 350px; overflow-y: auto; }
+        .notif-dropdown.show { display: block; }
+        .notif-item { padding: 10px; border-bottom: 1px solid #ccc; font-size: 12px; cursor: pointer; }
+        .notif-item:hover { background: #FFFFCC; }
+        .notif-header { background: #3366CC; color: white; padding: 8px; font-weight: bold; }
+        
+        @media (max-width: 768px) {
+            body { padding: 5px; }
+            .logo { font-size: 18px; }
+            .search-box input { width: 120px; font-size: 12px; }
+            .thumb { width: 80px; height: 60px; }
+            .video-frame { min-height: 220px; }
+            .recommend-thumb { width: 70px; height: 50px; }
+        }
+        @media (max-width: 480px) {
+            .header { flex-direction: column; text-align: center; }
+            .search-box { width: 100%; }
+            .watch-layout { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo" id="logoHome">🎬 YouTube™ 2005</div>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Cari video...">
+            <button id="searchBtn">Cari</button>
+        </div>
+        <div class="user-area" id="userArea"></div>
+    </div>
+    <div class="nav">
+        <span id="homeNav">🏠 Beranda</span>
+        <span id="uploadNav">📤 Upload</span>
+        <span id="trendingNav">🔥 Trending</span>
+        <span id="myChannelNav">🎬 Channel Saya</span>
+        <span id="accountNav">⚙️ Akun</span>
+    </div>
+    
+    <div class="content" style="padding: 20px;">
+        <div class="main" id="mainContent"><div class="loading">Memuat...</div></div>
+        <div class="sidebar" style="margin-top: 20px;">
+            <div style="background:#FFFFE0; border:2px solid #DAA520; padding:12px; border-radius:8px;">
+                <b>📢 YouTube 2005 v3.2</b><br>
+                ► ✅ Tidak bisa subscribe ke channel sendiri<br>
+                ► ✅ Nama channel muncul di semua halaman video<br>
+                ► ✅ Hapus video sendiri<br>
+                ► ✅ Klik channel orang = lihat channel mereka
+            </div>
+            <div style="background:#FFFFE0; border:2px solid #DAA520; padding:12px; margin-top:15px; border-radius:8px;">
+                <b>📊 Statistik</b><br>
+                Total Video: <span id="totalVideos">0</span><br>
+                Total User: <span id="totalUsers">0</span>
+            </div>
+        </div>
+    </div>
+    <div class="footer">© 2005 YouTube - Google Drive Edition | Tidak bisa subscribe ke channel sendiri | Nama channel muncul di semua video</div>
+</div>
+
+<script>
+// ========== KONFIGURASI ==========
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxMSim4SY5yfthb8vFJhwLg1WXFpdW9Y7YLv1itLSBf5Qr0u1gg5XVJIJDRLpYI9XPPmw/exec";
+
+let currentUser = null;
+let allVideos = [];
+let allUsers = [];
+let allLikes = [];
+let allComments = [];
+let allSubscribers = [];
+let allNotifications = [];
+
+// ========== API CALL ==========
+async function apiCall(action, data = {}, retry = 2) {
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+        const formData = new FormData();
+        formData.append('action', action);
+        for(let key in data) formData.append(key, data[key]);
+        const res = await fetch(WEBAPP_URL, { method: 'POST', body: formData, signal: controller.signal });
+        clearTimeout(timeoutId);
+        return await res.json();
+    } catch(e) {
+        if(retry > 0) { await new Promise(r => setTimeout(r, 1000)); return apiCall(action, data, retry - 1); }
+        return { error: e.message };
+    }
+}
+
+// ========== LOAD DATA ==========
+async function loadVideos() {
+    const res = await apiCall('getVideos');
+    if(res.success && res.videos) { allVideos = res.videos; document.getElementById('totalVideos').innerText = allVideos.length; }
+}
+async function loadUsers() {
+    const res = await apiCall('getUsers');
+    if(res.success && res.users) { allUsers = res.users; document.getElementById('totalUsers').innerText = allUsers.length; }
+}
+async function loadLikes() {
+    const res = await apiCall('getLikes');
+    if(res.success && res.likes) allLikes = res.likes;
+}
+async function loadComments() {
+    const res = await apiCall('getComments');
+    if(res.success && res.comments) allComments = res.comments;
+}
+async function loadSubscribers() {
+    const res = await apiCall('getSubscribers');
+    if(res.success && res.subscribers) allSubscribers = res.subscribers;
+}
+async function loadNotifications() {
+    const res = await apiCall('getNotifications');
+    if(res.success && res.notifications) allNotifications = res.notifications;
+}
+async function loadAllData() {
+    await Promise.all([loadVideos(), loadUsers(), loadLikes(), loadComments(), loadSubscribers(), loadNotifications()]);
+}
+
+// ========== HELPER ==========
+function escapeHtml(str) {
+    if(!str) return '';
+    return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+}
+function formatNumber(num) { return num ? num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0'; }
+function getLikeCount(videoId) { return allLikes.filter(l => l.video_id === videoId).length; }
+function getSubscriberCount(channel) { return allSubscribers.filter(s => s.channel === channel).length; }
+function getUserByUsername(username) { return allUsers.find(u => u.username === username); }
+function isSubscribed(channel) {
+    if(!currentUser) return false;
+    if(currentUser.username === channel) return true; // TIDAK BISA subscribe sendiri
+    return allSubscribers.some(s => s.channel === channel && s.subscriber === currentUser.username);
+}
+function getUserNotificationCount() {
+    if(!currentUser) return 0;
+    return allNotifications.filter(n => n.for_user === currentUser.username && !n.read).length;
+}
+
+// ========== NOTIFICATION ==========
+async function addNotification(forUser, message) {
+    await apiCall('addNotification', { for_user: forUser, message: message });
+    await loadNotifications();
+    updateUserArea();
+}
+async function markNotificationsRead() {
+    await apiCall('markNotificationsRead', { user: currentUser.username });
+    await loadNotifications();
+    updateUserArea();
+}
+
+// ========== AUTH ==========
+async function register() {
+    const username = document.getElementById('regUser')?.value.trim();
+    const email = document.getElementById('regEmail')?.value.trim();
+    const channelName = document.getElementById('regChannel')?.value.trim();
+    const password = document.getElementById('regPass')?.value;
+    if(!username || !email || !channelName || !password) {
+        const msg = document.getElementById('regMsg');
+        if(msg) msg.innerHTML = '<div class="error">Semua field harus diisi!</div>';
+        return;
+    }
+    const res = await apiCall('register', { username, email, channelName, password });
+    const msg = document.getElementById('regMsg');
+    if(msg) {
+        if(res.success) msg.innerHTML = '<div class="success">✅ Daftar berhasil! Silakan login.</div>';
+        else msg.innerHTML = `<div class="error">${res.error}</div>`;
+    }
+}
+
+async function login() {
+    const username = document.getElementById('loginUser')?.value;
+    const password = document.getElementById('loginPass')?.value;
+    const res = await apiCall('login', { username, password });
+    if(res.success) {
+        currentUser = res.user;
+        localStorage.setItem('user', JSON.stringify(currentUser));
+        updateUserArea();
+        await loadAllData();
+        renderHome();
+    } else {
+        const msg = document.getElementById('loginMsg');
+        if(msg) msg.innerHTML = `<div class="error">${res.error}</div>`;
+    }
+}
+
+function logout() {
+    currentUser = null;
+    localStorage.removeItem('user');
+    updateUserArea();
+    renderHome();
+}
+
+async function deleteAccount() {
+    if(!confirm('⚠️ PERINGATAN! Hapus akun permanen? Semua data Anda akan hilang!')) return;
+    const res = await apiCall('deleteAccount', { username: currentUser.username });
+    if(res.success) { alert('Akun berhasil dihapus!'); logout(); }
+    else alert('Gagal hapus akun: ' + res.error);
+}
+
+function updateUserArea() {
+    const area = document.getElementById('userArea');
+    const notifCount = getUserNotificationCount();
+    if(currentUser) {
+        area.innerHTML = `✅ ${escapeHtml(currentUser.channel_name)}<div class="notif-bell" id="notifBell"><span class="notif-icon">🔔</span>${notifCount > 0 ? `<span class="notif-badge">${notifCount}</span>` : ''}<div class="notif-dropdown" id="notifDropdown"><div class="notif-header">Notifikasi</div><div id="notifList">Memuat...</div></div></div><button id="logoutBtn">Logout</button>`;
+        document.getElementById('logoutBtn').onclick = logout;
+        const bell = document.getElementById('notifBell');
+        const dropdown = document.getElementById('notifDropdown');
+        if(bell) {
+            bell.onclick = (e) => { e.stopPropagation(); dropdown.classList.toggle('show'); if(dropdown.classList.contains('show')) loadNotificationsDropdown(); };
+            window.onclick = () => dropdown.classList.remove('show');
+        }
+    } else {
+        area.innerHTML = `👤 Tamu | <button id="showRegBtn">Daftar/Login</button>`;
+        const btn = document.getElementById('showRegBtn');
+        if(btn) btn.onclick = () => renderAccount();
+    }
+}
+
+async function loadNotificationsDropdown() {
+    const notifs = allNotifications.filter(n => n.for_user === currentUser?.username && !n.read);
+    const listHtml = notifs.length === 0 ? '<div style="padding:10px; text-align:center;">Tidak ada notifikasi</div>' : notifs.map(n => `<div class="notif-item">${escapeHtml(n.message)}<div class="notif-time">${n.created_at}</div></div>`).join('');
+    document.getElementById('notifList').innerHTML = listHtml;
+    if(notifs.length > 0) await markNotificationsRead();
+}
+
+// ========== DELETE VIDEO (untuk pemilik video) ==========
+async function deleteVideo(videoId) {
+    if(!confirm('Hapus video permanen? Tidak bisa dibatalkan!')) return;
+    const res = await apiCall('deleteVideo', { video_id: videoId, uploader: currentUser.username });
+    if(res.success) {
+        alert('Video berhasil dihapus!');
+        await loadVideos();
+        renderMyChannel();
+    } else {
+        alert('Gagal hapus video: ' + res.error);
+    }
+}
+
+// ========== TOGGLE PUBLISH ==========
+async function togglePublish(videoId, currentStatus) {
+    const newStatus = currentStatus === 1 ? 0 : 1;
+    const res = await apiCall('togglePublish', { video_id: videoId, uploader: currentUser.username, is_public: newStatus });
+    if(res.success) {
+        alert(newStatus === 1 ? 'Video dipublikasikan!' : 'Video diubah menjadi Draft');
+        await loadVideos();
+        renderMyChannel();
+    } else {
+        alert('Gagal: ' + res.error);
+    }
+}
+
+// ========== RENDER CHANNEL ORANG ==========
+async function renderChannelPage(username) {
+    await loadAllData();
+    const channelUser = getUserByUsername(username);
+    if(!channelUser) { renderHome(); return; }
+    
+    const channelVideos = allVideos.filter(v => v.uploader === username && v.is_public !== 0);
+    const subCount = getSubscriberCount(username);
+    const totalViews = channelVideos.reduce((sum, v) => sum + (v.views || 0), 0);
+    const isSubscribedToChannel = currentUser ? isSubscribed(username) : false;
+    const isOwnChannel = currentUser && currentUser.username === username;
+    
+    let html = `<h2>🎬 Channel: ${escapeHtml(channelUser.channel_name)}</h2>
+        <div style="background:#FFFFE0; padding:15px; margin-bottom:15px; border:2px solid #DAA520; border-radius:8px;">
+        📛 <strong>${formatNumber(subCount)}</strong> Subscribers | 👁️ ${formatNumber(totalViews)} Total Views | 📹 ${channelVideos.length} Video
+        ${currentUser && !isOwnChannel ? `<button id="channelSubBtn" class="sub-btn" style="margin-left:15px;">${isSubscribedToChannel ? 'Unsubscribe' : 'Subscribe'}</button>` : ''}
+        </div>`;
+    
+    if(channelVideos.length === 0) {
+        html += '<div class="upload-area">Belum ada video di channel ini.</div>';
+    } else {
+        for(let v of channelVideos) {
+            const likeCnt = getLikeCount(v.id);
+            html += `<div class="video-card" data-id="${v.id}"><div class="thumb">🎬</div><div class="video-info"><h3>${escapeHtml(v.name)}</h3><div>👍 ${formatNumber(likeCnt)} | 👁️ ${formatNumber(v.views || 0)} views</div><div class="channel-name" data-channel="${escapeHtml(v.uploader)}">📺 ${escapeHtml(v.channel_name || v.uploader)}</div></div></div>`;
+        }
+    }
+    document.getElementById('mainContent').innerHTML = html;
+    document.querySelectorAll('.video-card').forEach(c => { c.onclick = (e) => { if(!e.target.classList.contains('channel-name')) goToWatch(c.dataset.id); }; });
+    document.querySelectorAll('.channel-name').forEach(el => { el.onclick = (e) => { e.stopPropagation(); renderChannelPage(el.dataset.channel); }; });
+    
+    if(currentUser && !isOwnChannel && document.getElementById('channelSubBtn')) {
+        document.getElementById('channelSubBtn').onclick = async () => {
+            const res = await apiCall('subscribe', { channel: username, subscriber: currentUser.username });
+            if(res.success) {
+                if(res.action === 'subscribed') await addNotification(username, `${currentUser.channel_name} mulai subscribe channel Anda!`);
+                await loadSubscribers();
+                renderChannelPage(username);
+            }
+        };
+    }
+}
+
+// ========== RENDER HOME ==========
+async function renderHome() {
+    document.getElementById('mainContent').innerHTML = '<div class="loading">Memuat video...</div>';
+    await loadAllData();
+    let html = '<h2>📺 Video Publik</h2>';
+    const publicVideos = allVideos.filter(v => v.is_public !== 0);
+    if(publicVideos.length === 0) html += '<div class="upload-area">Belum ada video. Login dan upload!</div>';
+    else {
+        for(let v of publicVideos) {
+            const likeCnt = getLikeCount(v.id);
+            html += `<div class="video-card" data-id="${v.id}"><div class="thumb">🎬</div><div class="video-info"><h3>${escapeHtml(v.name)}</h3><div>👍 ${formatNumber(likeCnt)} | 👁️ ${formatNumber(v.views || 0)} views</div><div class="channel-name" data-channel="${escapeHtml(v.uploader)}">📺 ${escapeHtml(v.channel_name || v.uploader)}</div></div></div>`;
+        }
+    }
+    document.getElementById('mainContent').innerHTML = html;
+    document.querySelectorAll('.video-card').forEach(c => { c.onclick = (e) => { if(!e.target.classList.contains('channel-name')) goToWatch(c.dataset.id); }; });
+    document.querySelectorAll('.channel-name').forEach(el => { el.onclick = (e) => { e.stopPropagation(); renderChannelPage(el.dataset.channel); }; });
+}
+
+// ========== WATCH VIDEO ==========
+async function goToWatch(videoId) {
+    await loadAllData();
+    const video = allVideos.find(v => v.id === videoId);
+    if(!video) return;
+    
+    const embedUrl = `https://drive.google.com/file/d/${video.id}/preview`;
+    const likeCount = getLikeCount(video.id);
+    const videoComments = allComments.filter(c => c.video_id === videoId);
+    const subCount = getSubscriberCount(video.uploader || 'user');
+    const isSubscribedToChannel = currentUser ? isSubscribed(video.uploader || 'user') : false;
+    const isOwnChannel = currentUser && currentUser.username === (video.uploader || 'user');
+    const recommendations = allVideos.filter(v => v.id !== videoId && v.is_public !== 0).slice(0, 8);
+    
+    const commentsHtml = videoComments.map(c => `<div class="comment" data-id="${c.id}"><div><b>${escapeHtml(c.channel_name || c.user)}</b>: ${escapeHtml(c.text)}</div>${currentUser?.username === c.user ? `<button class="delComment" data-id="${c.id}">Hapus</button>` : ''}</div>`).join('');
+    
+    const recHtml = recommendations.map(rec => {
+        const recLike = getLikeCount(rec.id);
+        return `<div class="recommend-card" data-id="${rec.id}"><div class="recommend-thumb">🎬</div><div class="recommend-info"><h4>${escapeHtml(rec.name)}</h4><div class="recommend-meta">👍 ${formatNumber(recLike)} views</div></div></div>`;
+    }).join('');
+    
+    let html = `<div class="watch-layout"><div class="watch-main"><button id="backHome" style="margin-bottom:10px;">⬅ Kembali ke Beranda</button><div class="video-player"><iframe class="video-frame" src="${embedUrl}" allow="autoplay" allowfullscreen></iframe></div><div class="video-info-box"><h2>${escapeHtml(video.name)}</h2><div>📁 Google Drive | 👁️ ${formatNumber(video.views || 0)} views</div><div style="margin: 10px 0;">📺 <strong class="channel-link" data-channel="${escapeHtml(video.uploader)}">${escapeHtml(video.channel_name || video.uploader)}</strong> | 📛 <span id="subCount">${formatNumber(subCount)}</span> subscribers${currentUser && !isOwnChannel ? ` <button id="subBtn" class="sub-btn">${isSubscribedToChannel ? 'Unsubscribe' : 'Subscribe'}</button>` : ''}</div><div><button id="likeBtn" class="like-btn">❤️ Like (${formatNumber(likeCount)})</button></div></div><div class="comments-box"><h3>💬 Komentar (${videoComments.length})</h3><div id="commentsContainer">${commentsHtml || '<i>Belum ada komentar. Jadilah yang pertama!</i>'}</div>${currentUser ? `<textarea id="commentText" rows="2" placeholder="Tulis komentar..." style="width:100%; margin-top:10px;"></textarea><button id="postCommentBtn">Kirim Komentar</button>` : '<div style="background:#FFCC88; padding:10px; border-radius:6px;">🔐 Login dulu untuk komentar & like</div>'}</div></div><div class="watch-sidebar"><div style="background:#FFFFE0; border:2px solid #DAA520; padding:12px; margin-bottom:15px; border-radius:8px;"><b>🎬 Rekomendasi Video</b></div><div id="recommendationsList">${recHtml || '<div class="recommend-card">Tidak ada rekomendasi</div>'}</div></div></div>`;
+    
+    document.getElementById('mainContent').innerHTML = html;
+    document.getElementById('backHome').onclick = () => renderHome();
+    document.querySelectorAll('.recommend-card').forEach(c => { c.onclick = () => goToWatch(c.dataset.id); });
+    document.querySelectorAll('.channel-link').forEach(el => { el.onclick = () => renderChannelPage(el.dataset.channel); });
+    
+    document.getElementById('likeBtn').onclick = async () => {
+        if(!currentUser) { alert('Login dulu untuk like!'); return; }
+        const res = await apiCall('like', { video_id: video.id, user: currentUser.username });
+        if(res.success) {
+            if(video.uploader && video.uploader !== currentUser.username) await addNotification(video.uploader, `${currentUser.channel_name} menyukai video Anda "${video.name}"`);
+            await loadLikes();
+            goToWatch(video.id);
+        }
+    };
+    
+    if(currentUser && !isOwnChannel && document.getElementById('subBtn')) {
+        document.getElementById('subBtn').onclick = async () => {
+            const res = await apiCall('subscribe', { channel: video.uploader || 'user', subscriber: currentUser.username });
+            if(res.success) {
+                if(res.action === 'subscribed') await addNotification(video.uploader || 'user', `${currentUser.channel_name} mulai subscribe channel Anda!`);
+                await loadSubscribers();
+                goToWatch(video.id);
+            }
+        };
+    }
+    
+    if(currentUser && document.getElementById('postCommentBtn')) {
+        document.getElementById('postCommentBtn').onclick = async () => {
+            const text = document.getElementById('commentText').value.trim();
+            if(!text) { alert('Tulis komentar dulu!'); return; }
+            const res = await apiCall('addComment', { video_id: video.id, user: currentUser.username, text: text });
+            if(res.success) {
+                if(video.uploader && video.uploader !== currentUser.username) await addNotification(video.uploader, `${currentUser.channel_name} mengomentari video Anda "${video.name}"`);
+                await loadComments();
+                goToWatch(video.id);
+            }
+        };
+    }
+    
+    document.querySelectorAll('.delComment').forEach(btn => {
+        btn.onclick = async () => {
+            if(confirm('Hapus komentar ini?')) {
+                await apiCall('deleteComment', { comment_id: btn.dataset.id });
+                await loadComments();
+                goToWatch(video.id);
+            }
+        };
+    });
+}
+
+// ========== UPLOAD VIDEO ==========
+function renderUpload() {
+    if(!currentUser) {
+        document.getElementById('mainContent').innerHTML = '<div class="upload-area">⚠️ Harus login dulu untuk upload video!</div>';
+        return;
+    }
+    let html = `<div class="upload-area"><h3>📤 Upload Video ke Google Drive</h3><form id="uploadForm"><input type="text" id="uploadTitle" placeholder="Judul Video" required style="width:100%;"><textarea id="uploadDesc" rows="3" placeholder="Deskripsi video" style="width:100%;"></textarea><label><input type="checkbox" id="isPublic" checked> Publikasikan sekarang</label><br><input type="file" id="uploadFile" accept="video/*" required><br><button type="submit">Upload ke Google Drive</button><div id="uploadStatus"></div></form><hr><a href="https://drive.google.com/drive/folders/1jX4LRsY_4sZ_CVxsOx0F73Yc7EfMK9bt" target="_blank">📁 Buka Folder Google Drive</a></div>`;
+    document.getElementById('mainContent').innerHTML = html;
+    
+    document.getElementById('uploadForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const file = document.getElementById('uploadFile').files[0];
+        const title = document.getElementById('uploadTitle').value.trim();
+        const isPublic = document.getElementById('isPublic').checked ? 1 : 0;
+        if(!title || !file) { document.getElementById('uploadStatus').innerHTML = '<div class="error">Isi judul dan pilih file!</div>'; return; }
+        document.getElementById('uploadStatus').innerHTML = '<div class="success">⏳ Mengupload... mohon tunggu.</div>';
+        const reader = new FileReader();
+        reader.onload = async (ev) => {
+            const base64 = ev.target.result.split(',')[1];
+            const res = await apiCall('uploadVideo', { fileName: file.name, fileData: base64, mimeType: file.type, title: title, description: document.getElementById('uploadDesc').value, is_public: isPublic, uploader: currentUser.username });
+            if(res.success) {
+                document.getElementById('uploadStatus').innerHTML = '<div class="success">✅ Upload berhasil! Halaman akan direload.</div>';
+                setTimeout(() => renderHome(), 2000);
+            } else {
+                document.getElementById('uploadStatus').innerHTML = `<div class="error">❌ ${res.error}</div>`;
+            }
+        };
+        reader.readAsDataURL(file);
+    };
+}
+
+// ========== MY CHANNEL ==========
+async function renderMyChannel() {
+    if(!currentUser) { document.getElementById('mainContent').innerHTML = '<div class="upload-area">⚠️ Login dulu!</div>'; return; }
+    await loadAllData();
+    const myVideos = allVideos.filter(v => v.uploader === currentUser.username);
+    const subCount = getSubscriberCount(currentUser.username);
+    const totalViews = myVideos.reduce((sum, v) => sum + (v.views || 0), 0);
+    
+    let html = `<h2>🎬 Channel: ${escapeHtml(currentUser.channel_name)}</h2><div style="background:#FFFFE0; padding:15px; margin-bottom:15px; border:2px solid #DAA520; border-radius:8px;">📛 <strong>${formatNumber(subCount)}</strong> Subscribers | 👁️ ${formatNumber(totalViews)} Total Views | 📹 ${myVideos.length} Video</div>`;
+    
+    if(myVideos.length === 0) html += '<div class="upload-area">Anda belum punya video. Klik "Upload Video" untuk menambah!</div>';
+    else {
+        for(let v of myVideos) {
+            const likeCnt = getLikeCount(v.id);
+            const isPublic = v.is_public !== 0;
+            html += `<div class="video-card" data-id="${v.id}"><div class="thumb">🎬</div><div class="video-info"><h3>${escapeHtml(v.name)}${isPublic ? '<span class="badge-public">Publik</span>' : '<span class="badge-draft">Draft</span>'}</h3><div>👍 ${formatNumber(likeCnt)} | 👁️ ${formatNumber(v.views || 0)} views</div><div><button class="edit-btn" onclick="event.stopPropagation(); togglePublish('${v.id}', ${isPublic ? 1 : 0})">${isPublic ? '📥 Ubah ke Draft' : '📤 Publikasikan'}</button><button class="delete-video-btn" onclick="event.stopPropagation(); deleteVideo('${v.id}')">🗑️ Hapus Video</button></div></div></div>`;
+        }
+    }
+    document.getElementById('mainContent').innerHTML = html;
+    document.querySelectorAll('.video-card').forEach(c => { c.onclick = (e) => { if(!e.target.classList.contains('channel-name')) goToWatch(c.dataset.id); }; });
+}
+
+// ========== TRENDING ==========
+async function renderTrending() {
+    await loadAllData();
+    const sorted = [...allVideos].filter(v => v.is_public !== 0).sort((a,b) => getLikeCount(b.id) - getLikeCount(a.id));
+    let html = '<h2>🔥 Trending (Paling Banyak Like)</h2>';
+    if(sorted.length === 0) html += '<div class="upload-area">Belum ada video</div>';
+    else {
+        for(let v of sorted.slice(0, 10)) {
+            const likeCnt = getLikeCount(v.id);
+            html += `<div class="video-card" data-id="${v.id}"><div class="thumb">🎬</div><div class="video-info"><h3>${escapeHtml(v.name)}</h3><div>👍 ${formatNumber(likeCnt)} likes | 👁️ ${formatNumber(v.views || 0)} views</div><div class="channel-name" data-channel="${escapeHtml(v.uploader)}">📺 ${escapeHtml(v.channel_name || v.uploader)}</div></div></div>`;
+        }
+    }
+    document.getElementById('mainContent').innerHTML = html;
+    document.querySelectorAll('.video-card').forEach(c => { c.onclick = (e) => { if(!e.target.classList.contains('channel-name')) goToWatch(c.dataset.id); }; });
+    document.querySelectorAll('.channel-name').forEach(el => { el.onclick = (e) => { e.stopPropagation(); renderChannelPage(el.dataset.channel); }; });
+}
+
+// ========== ACCOUNT ==========
+function renderAccount() {
+    let html = '<div class="register-area"><h3>🔐 Manajemen Akun</h3>';
+    if(!currentUser) {
+        html += `<div><h4>📝 Daftar Channel Baru</h4><input type="text" id="regUser" placeholder="Username"><input type="email" id="regEmail" placeholder="Email"><input type="text" id="regChannel" placeholder="Nama Channel"><input type="password" id="regPass" placeholder="Password"><button id="doReg">Daftar</button><div id="regMsg"></div></div><hr><div><h4>🔑 Login</h4><input type="text" id="loginUser" placeholder="Username"><input type="password" id="loginPass" placeholder="Password"><button id="doLogin">Login</button><div id="loginMsg"></div></div>`;
+    } else {
+        html += `<div class="success">✅ Login sebagai: <strong>${escapeHtml(currentUser.username)}</strong><br>Channel: ${escapeHtml(currentUser.channel_name)}</div><hr><div style="background:#FFDDDD; padding:15px; border-radius:8px;"><h4 style="color:red;">⚠️ Hapus Akun Permanen</h4><p>Semua video, komentar, like, dan subscriber Anda akan dihapus.</p><button id="deleteAccountBtn" class="delete-btn">Hapus Akun Saya</button></div>`;
+    }
+    html += '</div>';
+    document.getElementById('mainContent').innerHTML = html;
+    if(!currentUser) {
+        document.getElementById('doReg')?.addEventListener('click', register);
+        document.getElementById('doLogin')?.addEventListener('click', login);
+    } else {
+        document.getElementById('deleteAccountBtn')?.addEventListener('click', deleteAccount);
+    }
+}
+
+function searchVideos(kw) {
+    if(!kw) { renderHome(); return; }
+    const filtered = allVideos.filter(v => v.name.toLowerCase().includes(kw.toLowerCase()) && v.is_public !== 0);
+    let html = `<h2>🔍 Hasil pencarian: "${escapeHtml(kw)}" (${filtered.length} video)</h2>`;
+    if(filtered.length === 0) html += '<div class="upload-area">Tidak ada video dengan kata tersebut</div>';
+    else for(let v of filtered) html += `<div class="video-card" data-id="${v.id}"><div class="thumb">🎬</div><div><h3>${escapeHtml(v.name)}</h3><div class="channel-name" data-channel="${escapeHtml(v.uploader)}">📺 ${escapeHtml(v.channel_name || v.uploader)}</div></div></div>`;
+    document.getElementById('mainContent').innerHTML = html;
+    document.querySelectorAll('.video-card').forEach(c => { c.onclick = (e) => { if(!e.target.classList.contains('channel-name')) goToWatch(c.dataset.id); }; });
+    document.querySelectorAll('.channel-name').forEach(el => { el.onclick = (e) => { e.stopPropagation(); renderChannelPage(el.dataset.channel); }; });
+}
+
+// ========== EVENT LISTENERS ==========
+document.getElementById('homeNav').onclick = renderHome;
+document.getElementById('uploadNav').onclick = renderUpload;
+document.getElementById('trendingNav').onclick = renderTrending;
+document.getElementById('myChannelNav').onclick = renderMyChannel;
+document.getElementById('accountNav').onclick = renderAccount;
+document.getElementById('logoHome').onclick = renderHome;
+document.getElementById('searchBtn').onclick = () => { const kw = document.getElementById('searchInput').value; searchVideos(kw); };
+
+// ========== GLOBAL FUNCTIONS ==========
+window.deleteVideo = deleteVideo;
+window.togglePublish = togglePublish;
+
+// ========== INIT ==========
+const saved = localStorage.getItem('user');
+if(saved) { try { currentUser = JSON.parse(saved); updateUserArea(); } catch(e) {} }
+renderHome();
+</script>
+</body>
+</html>
